@@ -16,5 +16,10 @@
   "bugs": {
     "url": "https://github.com/umhello2020/employee-management-mysql/issues"
   },
-  "homepage": "https://github.com/umhello2020/employee-management-mysql#readme"
+  "homepage": "https://github.com/umhello2020/employee-management-mysql#readme",
+  "dependencies": {
+    "console.table": "^0.10.0",
+    "inquirer": "8.2.4",
+    "mysql2": "^2.1.0"
+  }
 }
