@@ -3,12 +3,14 @@ const { prompt } = require('inquirer');
 const db = require('./db');
 require("console.table");
 
+
 // function to start initial prompts to navigate user
 function initPrompts () {
     prompt ([
         {
             type: 'list',
             message: "What would you like to do?",
+            name: "choice",
             choices: [
                 {
                     name: "View All Departments",
@@ -76,15 +78,29 @@ function initPrompts () {
 };
 
 function viewDepartments() {
-    db
+    db.displayDepartments()
+        .then(([departments]) => {
+            console.log(departments);
+            console.log("\n");
+            console.table(departments);
+        }).then(() => initPrompts() ) 
 };
 
 function viewRoles() {
-
+    db.displayRoles()
+        .then(([roles]) => {
+            console.table(roles);
+            initPrompts();
+        })
 };
 
 function viewEmployees() {
-
+    // db.displayEmployees()
+    //     .then(([employees]) => {
+    //         console.table(employees);
+    //     }).then(() => {
+    //         initPrompts();
+    //     });
 };
 
 function addDepartment() {
@@ -123,6 +139,8 @@ function addRole() {
 };
 
 function addEmployee() {
+
+
     prompt([
         {
             type: "input",
@@ -137,7 +155,9 @@ function addEmployee() {
         {
             type: "input",
             message: "What is the employee's role?",
-            name: "new_role"
+            name: "new_role",
+            choices: [empRoles]
+
         },
         {
             type: "input",
@@ -165,5 +185,6 @@ function quit() {
     console.log("Thank you!");
     process.exit();
 }
+
 
 initPrompts();
