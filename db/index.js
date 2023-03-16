@@ -24,7 +24,7 @@ class DB {
     // Display employee info
     displayEmployees() {
         return this.connection.promise().query(
-            "SELECT employee.id, employee.first_name, employee.last_name, role.salary, role.title, CONCAT (manger.first_name, ' ', manager.last_name) AS manager, department.name AS department FROM employee LEFT JOIN on employee.id = role.id LEFT JOIN department on role.department_id = department.id LEFT JOIN employee manager on manager.id = employee.manager_id;"
+            "SELECT employee.id, employee.first_name, employee.last_name, role.salary, role.title, CONCAT (manager.first_name, ' ', manager.last_name) AS manager, department.name AS department FROM employee LEFT JOIN role on employee.role_id = role.id LEFT JOIN department on role.department_id = department.id LEFT JOIN employee manager on manager.id = employee.manager_id;"
         );
     }
 
