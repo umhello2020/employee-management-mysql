@@ -188,7 +188,7 @@ function addEmployee() {
             
             db.displayEmployees()
                 .then(([emps]) => {
-                    const managerChoices = emp.map(({ id, first_name, last_name }) => ({
+                    const managerChoices = emps.map(({ id, first_name, last_name }) => ({
                         name: `${first_name} ${last_name}`,
                         value: id
                     }));
@@ -217,14 +217,42 @@ function addEmployee() {
 
 // Update an employee that is already logged in the database
 function updateEmployee() {
-    prompt([
-        {
-            type: "list",
-            message: "Which employee would you like to update?",
-            name: "choose_emp",
-            choices: employeeChoices
-        }
-    ]).then ()
+    db.displayEmployees()
+    .then(([emps]) => {
+        const employeeChoices = emps.map(({ id, first_name, last_name }) => ({
+            name: `${first_name} ${last_name}`,
+            value: id
+        }));
+
+        prompt([
+            {
+                type: "list",
+                message: "Which employee would you like to update?",
+                name: "choose_emp",
+                choices: employeeChoices
+            }
+        ]).then(res => {
+            let employee_id = res.choose_emp;
+            db.displayRoles() 
+            .then(([roles]) => {
+                const roleChoices = roles.map(({ id, title }) => ({
+                    name: title,
+                    value: id
+                }));
+
+                prompt([
+                    {
+                        type: "list",
+                        message: "What is the new role you would like to assign?",
+                        name: "update_role",
+                        choices: roleChoices
+                    }
+                ]).then(res => db.changeEmployee(employee_id, res.update_role))
+                .then(() => initPrompts());
+            });
+        });
+    });
+    
 };
 
 function quit() {
