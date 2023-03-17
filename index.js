@@ -4,7 +4,7 @@ const db = require('./db');
 require("console.table");
 
 
-// function to start initial prompts to navigate user
+// start initial prompts to navigate user
 function initPrompts () {
     prompt ([
         {
@@ -77,32 +77,34 @@ function initPrompts () {
     });
 };
 
+// View all departments
 function viewDepartments() {
     db.displayDepartments()
         .then(([departments]) => {
-            console.log(departments);
-            console.log("\n");
             console.table(departments);
-        }).then(() => initPrompts() ) 
+            initPrompts();
+        });
 };
 
+// View all roles
 function viewRoles() {
     db.displayRoles()
         .then(([roles]) => {
             console.table(roles);
             initPrompts();
-        })
+        });
 };
 
+// View all employees
 function viewEmployees() {
-    // db.displayEmployees()
-    //     .then(([employees]) => {
-    //         console.table(employees);
-    //     }).then(() => {
-    //         initPrompts();
-    //     });
+    db.displayEmployees()
+        .then(([employees]) => {
+            console.table(employees);
+            initPrompts();
+        });
 };
 
+// Add a department to the database
 function addDepartment() {
     prompt ([
         {
@@ -110,66 +112,110 @@ function addDepartment() {
             message: "What department would you like to add?",
             name: "new_department"
         }
-    ]).then(res => {
-
-    })
+    ]).then(newDept => {
+        db.addDepartment(newDept)
+            .then(() => console.log(`Added ${newDept.name} to the Database!`))
+            .then(() => initPrompts());
+    });
 };
 
+// Add a role to the database
 function addRole() {
-    prompt([
-        {
-            type: "input",
-            message: "What role would you like to add?",
-            name: "new_role"
-        },
-        {
-            type: "input", 
-            message: "What is the salary of this role?",
-            name: "new_salary"
-        },
-        {
-            type: "list",
-            message: "What department will this role be in?",
-            name: "choose_dep",
-            choices: departmentChoices
-        }
-    ]).then(res => {
+    db.displayDepartments()
+        .then(([depts]) => {
+            const departmentChoices = depts.map(({ id, name }) => ({
+                name: name,
+                value: id
+            }));
 
-    })
+            prompt([
+                {
+                    type: "input",
+                    message: "What role would you like to add?",
+                    name: "new_role"
+                },
+                {
+                    type: "input", 
+                    message: "What is the salary of this role?",
+                    name: "new_salary"
+                },
+                {
+                    type: "list",
+                    message: "What department will this role be in?",
+                    name: "choose_dep",
+                    choices: departmentChoices
+                }
+            ]).then(newRole => {
+                db.addRole(newRole)
+                    .then(() => console.log(`Added ${newRole.name} to the Database!`))
+                    .then(() => initPrompts());
+            });
+        });
+   
 };
 
+// Add an Employee to the database
 function addEmployee() {
+    db.displayRoles() 
+    .then(([roles]) => {
+        const roleChoices = roles.map(({ id, title }) => ({
+            name: title,
+            value: id
+        }));
 
+        prompt([
+            {
+                type: "input",
+                message: "What is the first name of the employee you would like to add?",
+                name: "first_name"
+            },
+            {
+                type: "input",
+                message: "What is the last name of the employee you would like to add?",
+                name: "last_name"
+            },
+            {
+                type: "input",
+                message: "What is the employee's role?",
+                name: "new_role",
+                choices: roleChoices
+            
+            }
+        ]).then(res => {
+            let firstName = res.first_name;
+            let lastName = res.last_name;
+            let newRole = res.new_role;
+            
+            db.displayEmployees()
+                .then(([emps]) => {
+                    const managerChoices = emp.map(({ id, first_name, last_name }) => ({
+                        name: `${first_name} ${last_name}`,
+                        value: id
+                    }));
 
-    prompt([
-        {
-            type: "input",
-            message: "What is the first name of the employee you would like to add?",
-            name: "first_name"
-        },
-        {
-            type: "input",
-            message: "What is the last name of the employee you would like to add?",
-            name: "last_name"
-        },
-        {
-            type: "input",
-            message: "What is the employee's role?",
-            name: "new_role",
-            choices: [empRoles]
+                    managerChoices.unshift({ name: "N/A", value: null });
+                    prompt({
+                        type: "input",
+                        message: "Who is the employee's manager?",
+                        name: "choose_mang",
+                        choices: managerChoices
+                    }).then(res => {
+                        let newEmployee = {
+                            manager_id: res.choose_mang,
+                            role_id: newRole,
+                            first_name: firstName,
+                            last_name: lastName
+                        };
 
-        },
-        {
-            type: "input",
-            message: "Who is the employee's manager?",
-            name: "choose_mang"
-        }
-    ]).then (res => {
-        let firstName = res.first_name;
-        let lastName = res.last_name;
-    })
+                        db.addEmployee(newEmployee);
+                    }).then(() => console.log(`Added ${firstName} ${lastName} to the database!`))
+                    .then(() => initPrompts());
+                });
+        });
+    });
 };
 
+// Update an employee that is already logged in the database
 function updateEmployee() {
     prompt([
         {
