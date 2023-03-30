@@ -113,7 +113,7 @@ function addDepartment() {
             name: "new_department"
         }
     ]).then(newDept => {
-        db.addDepartment(newDept)
+        db.createDepartment(newDept)
             .then(() => console.log(`Added ${newDept.name} to the Database!`))
             .then(() => initPrompts());
     });
@@ -146,7 +146,7 @@ function addRole() {
                     choices: departmentChoices
                 }
             ]).then(newRole => {
-                db.addRole(newRole)
+                db.createRole(newRole)
                     .then(() => console.log(`Added ${newRole.name} to the Database!`))
                     .then(() => initPrompts());
             });
@@ -207,7 +207,7 @@ function addEmployee() {
                             last_name: lastName
                         };
 
-                        db.addEmployee(newEmployee);
+                        db.createEmployee(newEmployee);
                     }).then(() => console.log(`Added ${firstName} ${lastName} to the database!`))
                     .then(() => initPrompts());
                 });
