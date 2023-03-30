@@ -25,8 +25,8 @@ This project is specifically a back end application. Getting this project starte
 
 ## Visuals
 
-Here is a demo video walking a user through the application.
-    Untitled_ Mar 30, 2023 4_11 PM.webm
+Here is a link to the demo video that will walk you through this application.
+Link: https://youtu.be/qGG1ZPDp6Wc
 
 ## Installation
     
