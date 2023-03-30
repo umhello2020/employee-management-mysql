@@ -110,7 +110,7 @@ function addDepartment() {
         {
             type: "input",
             message: "What department would you like to add?",
-            name: "new_department"
+            name: "name"
         }
     ]).then(newDept => {
         db.createDepartment(newDept)
@@ -122,37 +122,35 @@ function addDepartment() {
 // Add a role to the database
 function addRole() {
     db.displayDepartments()
-        .then(([depts]) => {
-            const departmentChoices = depts.map(({ id, name }) => ({
-                name: name,
-                value: id
-            }));
-
-            prompt([
-                {
-                    type: "input",
-                    message: "What role would you like to add?",
-                    name: "new_role"
-                },
-                {
-                    type: "input", 
-                    message: "What is the salary of this role?",
-                    name: "new_salary"
-                },
-                {
-                    type: "list",
-                    message: "What department will this role be in?",
-                    name: "choose_dep",
-                    choices: departmentChoices
-                }
-            ]).then(newRole => {
-                db.createRole(newRole)
-                    .then(() => console.log(`Added ${newRole.name} to the Database!`))
-                    .then(() => initPrompts());
-            });
-        });
-   
-};
+      .then(([depts]) => {
+        const departmentChoices = depts.map(({ id, name }) => ({
+          name: name,
+          value: id
+        }));
+  
+        prompt([
+          {
+            name: "title",
+            message: "What is the name of the role?"
+          },
+          {
+            name: "salary",
+            message: "What is the salary of the role?"
+          },
+          {
+            type: "list",
+            name: "department_id",
+            message: "Which department does the role belong to?",
+            choices: departmentChoices
+          }
+        ])
+          .then(role => {
+            db.createRole(role)
+              .then(() => console.log(`Added ${role.title} to the database`))
+              .then(() => initPrompts())
+          })
+      })
+  }
 
 // Add an Employee to the database
 function addEmployee() {
@@ -175,9 +173,9 @@ function addEmployee() {
                 name: "last_name"
             },
             {
-                type: "input",
+                type: "list",
                 message: "What is the employee's role?",
-                name: "new_role",
+                name: "role",
                 choices: roleChoices
             
             }
@@ -195,7 +193,7 @@ function addEmployee() {
 
                     managerChoices.unshift({ name: "N/A", value: null });
                     prompt({
-                        type: "input",
+                        type: "list",
                         message: "Who is the employee's manager?",
                         name: "choose_mang",
                         choices: managerChoices

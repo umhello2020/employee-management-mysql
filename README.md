@@ -26,7 +26,8 @@ This project is specifically a back end application. Getting this project starte
 ## Visuals
 
 Here is a demo video walking a user through the application.
-    
+    Untitled_ Mar 30, 2023 4_11 PM.webm
+
 ## Installation
     
 To use this application, you will need to have Node.js installed on your desktop. Once in your code editor of choice, you will need to open your terminal and initialize npm with the command: npm init. Once you have npm initialized, you will install npm with the command: npm install. You will need to ensure that you have mysql2, inquirer, and console.tables installed.
